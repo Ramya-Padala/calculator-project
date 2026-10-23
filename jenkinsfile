@@ -25,10 +25,8 @@ pipeline {
             withSonarQubeEnv('sonar-server') {
                 sh """
                     '${scannerHome}/bin/sonar-scanner' \
-                      -Dsonar.projectKey=calculator-project \
-                      -Dsonar.projectName=calculator-project \
-                      -Dsonar.projectVersion=1.0 \
-                      -Dsonar.sources=.
+                    -Dsonar.projectKey=calculator-project \
+                    -Dsonar.sources=.
                 """
             }
         }
