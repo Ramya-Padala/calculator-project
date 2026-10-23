@@ -17,11 +17,15 @@ pipeline{
                 sh 'CI=false npm run build'
             }
         }
-        stage('deploy'){
-            agent any
-            steps{
-                sh "sudo docker build -t calcuimg:latest ."
-                sh "sudo docker run -itd --name cal1 -p 3000:3000 calcuimg:latest"
+        stage('Deploy') {
+    steps {
+        sh '''
+            sudo docker rm -f cal1 || true
+            sudo docker run -d \
+                --name cal1 \
+                -p 3000:3000 \
+                calcuimg:latest
+        '''
             }
         }
     }
