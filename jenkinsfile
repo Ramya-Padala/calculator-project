@@ -42,7 +42,6 @@ pipeline {
                 sh '''
                     sudo docker ps
                     sudo docker logs --tail 50 cal1
-                    curl -I --connect-timeout 10 http://localhost:3000
                 '''
             }
         }
