@@ -1,31 +1,49 @@
-pipeline{
-    tools{
-        nodejs "mynode"
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'mynode'
     }
-    agent none
-    stages{
-        stage('Checkout'){
-           agent any
-            steps{
-                git 'https://github.com/Aswin9796/calculator-project-.git'
+
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
             }
         }
-        stage('build'){
-            agent any
-            steps{
-                sh 'npm install'
+
+        stage('Build') {
+            steps {
                 sh 'CI=false npm run build'
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                sh 'sudo docker build -t calcuimg:latest .'
+            }
+        }
+
         stage('Deploy') {
-    steps {
-        sh '''
-            sudo docker rm -f cal1 || true
-            sudo docker run -d \
-                --name cal1 \
-                -p 3000:3000 \
-                calcuimg:latest
-        '''
+            steps {
+                sh '''
+                    sudo docker rm -f cal1 || true
+
+                    sudo docker run -d \
+                        --name cal1 \
+                        -p 3000:3000 \
+                        calcuimg:latest
+                '''
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                sh '''
+                    sudo docker ps
+                    sudo docker logs --tail 50 cal1
+                    curl -I --connect-timeout 10 http://localhost:3000
+                '''
             }
         }
     }
