@@ -17,16 +17,17 @@ pipeline {
                 sh 'CI=false npm run build'
             }
         }
-        stage('SonarQube Analysis') {
-    steps {
-        script {
-            def scannerHome = tool 'SonarScanner'
+       stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
 
-            withSonarQubeEnv('sonar-server') {
-                sh """
-                    '${scannerHome}/bin/sonar-scanner' \
-                    -Dsonar.projectKey=calculator-project \
-                    -Dsonar.sources=.
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            '${scannerHome}/bin/sonar-scanner' \
+                            -Dsonar.projectKey=calculator-project \
+                            -Dsonar.projectName=calculator-project \
+                            -Dsonar.sources=src
                 """
             }
         }
